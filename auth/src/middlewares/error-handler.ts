@@ -15,18 +15,14 @@ export const errorHandler = (
         field: param
       }
     });
-    res.status(400).send({
-      errors: formattedErrors
+    res.status(err.statusCode).send({
+      errors: err.serializeErrors()
     });
   }
 
   if (err instanceof DatabaseConnectionError) {
-    return res.status(500).send({
-      errors: [
-        {
-          message: err.reason
-        }
-      ]
+    return res.status(err.statusCode).send({
+      errors: err.serializeErrors()
     });
   }
 
