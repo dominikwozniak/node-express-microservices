@@ -1,26 +1,40 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Model, Schema, Document } from 'mongoose';
 
-interface IUser extends Document {
+// interface describes the properties
+// that are required to create a new User
+interface IUser {
   email: string;
   password: string;
 }
 
-const userSchema: Schema = new Schema({
+// interface describes the properties
+// that a User Model has
+interface IUserModel extends Model<IUserDoc> {
+  build(attrs: IUser): IUserDoc;
+}
+
+// interface describes the properties
+// that a User Document has
+interface IUserDoc extends Document {
+  email: string;
+  password: string;
+}
+
+const userSchema = new Schema({
   email: {
     type: String,
-    required: true,
-    unique: true
+    required: true
   },
   password: {
-    type:  String,
+    type: String,
     required: true
   }
 });
 
-const User = mongoose.model<IUser>('User', userSchema);
+userSchema.statics.build = (attrs: IUser) => {
+  return new User(attrs);
+};
 
-const buildUser = (user: IUser) => {
-  return new User(user)
-}
+const User = mongoose.model<IUserDoc, IUserModel>('User', userSchema);
 
-export { User, buildUser };
+export { User };
