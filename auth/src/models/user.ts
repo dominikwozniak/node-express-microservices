@@ -31,8 +31,8 @@ const userSchema = new Schema({
   }
 });
 
-userSchema.statics.build = (attrs: IUser) => {
-  return new User(attrs);
+userSchema.statics.build = (user: IUser) => {
+  return new User(user);
 };
 
 const User = mongoose.model<IUserDoc, IUserModel>('User', userSchema);
