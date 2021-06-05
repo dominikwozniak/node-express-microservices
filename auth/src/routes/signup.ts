@@ -43,7 +43,7 @@ router.post('/api/users/signup', [
   // @ts-ignore
   req.session = { jwt: userJwt };
 
-  res.status(201).send({ user });
+  res.status(201).send(user);
 });
 
 export { router as signupRouter };
