@@ -17,7 +17,7 @@ spec:
           image: dominikwozniak/auth
           env:
             - name: JWT_KEY
-              valueForm:
+              valueFrom:
                 secretKeyRef:
                   name: jwt-secret
                   key: JWT_KEY
