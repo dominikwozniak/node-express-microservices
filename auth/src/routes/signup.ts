@@ -41,7 +41,7 @@ router.post('/api/users/signup', [
     {
       id: user.id,
       email: user.email,
-    }, 'abcabc',
+    }, process.env.JWT_KEY!
   );
 
   // @ts-ignore

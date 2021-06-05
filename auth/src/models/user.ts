@@ -30,6 +30,19 @@ const userSchema = new Schema({
     type: String,
     required: true
   }
+},{
+  toJSON: {
+    /*
+    transform function removes unnecessary fields that are returned to users.
+    Id is also changed to make the format uniform.
+     */
+    transform(doc, ret) {
+      ret.id = ret._id;
+      delete ret._id;
+      delete ret.password;
+      delete ret.__v;
+    }
+  }
 });
 
 userSchema.pre('save', async function(done) {
