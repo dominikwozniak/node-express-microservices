@@ -31,4 +31,4 @@ export const currentUser = (
   } catch (err) {}
 
   next();
-}
+};
