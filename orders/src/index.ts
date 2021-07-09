@@ -34,7 +34,7 @@ const start = async () => {
     process.on('SIGINT', () => natsWrapper.client.close());
     process.on("SIGTERM", () => natsWrapper.client.close());
 
-    await mongoose.connect('mongodb://tickets-mongo-srv:27017/tickets', {
+    await mongoose.connect('mongodb://orders-mongo-srv:27017/orders', {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useCreateIndex: true
