@@ -53,6 +53,6 @@ orderSchema.statics.build = (attrs: IOrder) => {
   return new Order(attrs);
 };
 
-const Order = mongoose.model<IOrderDoc, IOrderModel>('Ticket', orderSchema);
+const Order = mongoose.model<IOrderDoc, IOrderModel>('Order', orderSchema);
 
 export { Order, IOrderDoc as OrderDoc };
