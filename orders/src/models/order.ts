@@ -1,15 +1,17 @@
 import mongoose, { Document, Model, Schema } from 'mongoose';
+import { OrderStatus } from "@dwticketing/common";
+import { TicketDoc } from "./ticket";
 
 interface IOrder {
   userId: string;
-  status: string;
+  status: OrderStatus;
   expiresAt: Date;
   ticket: TicketDoc
 }
 
 interface IOrderDoc extends Document {
   userId: string;
-  status: string;
+  status: OrderStatus;
   expiresAt: Date;
   ticket: TicketDoc
 }
@@ -25,7 +27,9 @@ const orderSchema = new Schema({
   },
   status: {
     type: String,
-    required: true
+    required: true,
+    enum: Object.values(OrderStatus),
+    default: OrderStatus.Created
   },
   expiresAt: {
     type: Schema.Types.Date
