@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
 import request from 'supertest';
-import {app} from '../../app';
-import {Order} from '../../models/order';
-import {Ticket} from '../../models/ticket';
-import {OrderStatus} from "@dwticketing/common";
+import { app } from '../../app';
+import { Order } from '../../models/order';
+import { Ticket } from '../../models/ticket';
+import { OrderStatus } from "@dwticketing/common";
 
 it('returns an error if the ticket does not exist', async () => {
   const ticketId = mongoose.Types.ObjectId();
