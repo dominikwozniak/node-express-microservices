@@ -2,6 +2,8 @@ import mongoose, { Document, Model, Schema } from 'mongoose';
 import { OrderStatus } from "@dwticketing/common";
 import { TicketDoc } from "./ticket";
 
+export { OrderStatus }
+
 interface IOrder {
   userId: string;
   status: OrderStatus;
@@ -53,4 +55,4 @@ orderSchema.statics.build = (attrs: IOrder) => {
 
 const Order = mongoose.model<IOrderDoc, IOrderModel>('Ticket', orderSchema);
 
-export { Order };
+export { Order, IOrderDoc as OrderDoc };
