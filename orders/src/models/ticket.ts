@@ -1,5 +1,6 @@
 import mongoose, { Document, Model, Schema } from 'mongoose';
 import { Order, OrderDoc, OrderStatus } from "./order";
+import { updateIfCurrentPlugin } from "mongoose-update-if-current";
 
 interface ITicket {
   id: string;
@@ -10,11 +11,13 @@ interface ITicket {
 interface ITicketDoc extends Document {
   title: string;
   price: number;
+  version: number;
   isReserved(): Promise<boolean>;
 }
 
 interface ITicketModel extends Model<ITicketDoc> {
-  build(attrs: ITicket): ITicketDoc
+  build(attrs: ITicket): ITicketDoc;
+  findByEvent(event: { id: string, version: number }): Promise<ITicketDoc | null>;
 }
 
 const ticketSchema = new Schema({
@@ -35,6 +38,16 @@ const ticketSchema = new Schema({
     }
   }
 });
+
+ticketSchema.set('versionKey', 'version');
+ticketSchema.plugin(updateIfCurrentPlugin)
+
+ticketSchema.statics.findByEvent = (event: { id: string, version: number }) => {
+  return Ticket.findOne({
+    _id: event.id,
+    version: event.version - 1
+  });
+};
 
 ticketSchema.statics.build = (attrs: ITicket) => {
   return new Ticket({
