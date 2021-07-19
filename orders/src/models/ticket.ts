@@ -1,5 +1,6 @@
 import mongoose, { Document, Model, Schema } from 'mongoose';
 import { Order, OrderDoc, OrderStatus } from "./order";
+import { updateIfCurrentPlugin } from "mongoose-update-if-current";
 
 interface ITicket {
   id: string;
@@ -16,7 +17,10 @@ interface ITicketDoc extends Document {
 
 interface ITicketModel extends Model<ITicketDoc> {
   build(attrs: ITicket): ITicketDoc;
-  findByEvent(event: { id: string, version: number }): Promise<ITicketDoc | null>;
+  findByEvent(event: {
+    id: string,
+    version: number
+  }): Promise<ITicketDoc | null>;
 }
 
 const ticketSchema = new Schema({
@@ -34,25 +38,27 @@ const ticketSchema = new Schema({
     transform(doc, ret) {
       ret.id = ret._id;
       delete ret._id;
-    }
-  }
+    },
+  },
 });
 
 ticketSchema.set('versionKey', 'version');
+ticketSchema.plugin(updateIfCurrentPlugin);
 
-ticketSchema.pre('save', function(done) {
-  // @ts-ignore
-  this.$where = {
-    version: this.get('version') - 1
-  };
+// TODO: prepare function for pass ticket-updated-listener test
+// ticketSchema.pre('save', function(done) {
+//   // @ts-ignore
+//   this.$where = {
+//     version: this.get('version') - 1
+//   };
+//
+//   done();
+// });
 
-  done();
-});
-
-ticketSchema.statics.findByEvent = (event: { id: string, version: number }) => {
+ticketSchema.statics.findByEvent = (event: { id: string; version: number }) => {
   return Ticket.findOne({
     _id: event.id,
-    version: event.version - 1
+    version: event.version - 1,
   });
 };
 
