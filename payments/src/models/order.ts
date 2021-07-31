@@ -1,23 +1,22 @@
 import mongoose, { Document, Model, Schema } from 'mongoose';
 import { updateIfCurrentPlugin } from "mongoose-update-if-current";
 import { OrderStatus } from "@dwticketing/common";
-import { TicketDoc } from "./ticket";
 
 export { OrderStatus }
 
 interface IOrder {
+  id: string;
+  version: number;
   userId: string;
+  price: number;
   status: OrderStatus;
-  expiresAt: Date;
-  ticket: TicketDoc
 }
 
 interface IOrderDoc extends Document {
-  userId: string;
-  status: OrderStatus;
-  expiresAt: Date;
-  ticket: TicketDoc;
   version: number;
+  userId: string;
+  price: number;
+  status: OrderStatus;
 }
 
 interface IOrderModel extends Model<IOrderDoc> {
@@ -29,18 +28,13 @@ const orderSchema = new Schema({
     type: String,
     required: true
   },
+  price: {
+    type: Number,
+    required: true
+  },
   status: {
     type: String,
-    required: true,
-    enum: Object.values(OrderStatus),
-    default: OrderStatus.Created
-  },
-  expiresAt: {
-    type: Schema.Types.Date
-  },
-  ticket: {
-    type: Schema.Types.ObjectId,
-    ref: 'Ticket'
+    required: true
   }
 }, {
   toJSON: {
@@ -55,9 +49,15 @@ orderSchema.set('versionKey', 'version');
 orderSchema.plugin(updateIfCurrentPlugin);
 
 orderSchema.statics.build = (attrs: IOrder) => {
-  return new Order(attrs);
+  return new Order({
+    _id: attrs.id,
+    version: attrs.version,
+    price: attrs.price,
+    userId: attrs.userId,
+    status: attrs.status
+  });
 };
 
 const Order = mongoose.model<IOrderDoc, IOrderModel>('Order', orderSchema);
 
-export { Order, IOrderDoc as OrderDoc };
+export { Order };
